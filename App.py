@@ -1,70 +1,150 @@
 import streamlit as st
 import pandas as pd
-import qrcode 
-from PIL import Image
-import os
+import qrcode
+from io import BytesIO
 import time
 
-# -----------------------------
-# GOOGLE SHEETS CSV LINK
-# Replace this with your own Google Sheet CSV link
-# -----------------------------
-SHEET_URL = "https://docs.google.com/spreadsheets/d/17HJcWMubJ-rXxluqCSGDm3jIq4kzgLQsZWBBeVCRmdM/edit?usp=sharing"
+# ------------------------------------
+# PAGE CONFIG
+# ------------------------------------
 
-st.title("Google Form QR Generator")
+st.set_page_config(
+    page_title="Auto QR Generator",
+    page_icon="📱",
+    layout="centered"
+)
 
-st.write("Click the button below to answer the Google Form.")
+# ------------------------------------
+# CUSTOM STYLE
+# ------------------------------------
 
-# -----------------------------
-# GOOGLE FORM BUTTON
-# -----------------------------
-google_form_url = "https://forms.gle/jgouL8gwFgzwQzvY9"
+st.markdown("""
+<style>
 
-if st.button("Open Google Form"):
-    st.markdown(f"""
-    <meta http-equiv="refresh" content="0; url={google_form_url}">
-    """, unsafe_allow_html=True)
+.main {
+    text-align: center;
+}
+
+.stButton > button {
+    width: 100%;
+    border-radius: 10px;
+    height: 3em;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.qr-container {
+    padding: 20px;
+    border-radius: 15px;
+    background-color: #f3f3f3;
+}
+
+</style>
+""", unsafe_allow_html=True)
+
+# ------------------------------------
+# YOUR LINKS
+# ------------------------------------
+
+GOOGLE_FORM_LINK = "https://forms.gle/aEkPK2UH5cZTMA7j8K"
+
+GOOGLE_SHEET_CSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSe4Mlc7QAWT5-e9DRKdFI3ecQijiaYDnZMLT7a4wEX1dzvC5ftEHElX0g0jl0wHgcHdHs33jt56G5b/pub?output=csv"
+
+# ------------------------------------
+# HEADER
+# ------------------------------------
+
+st.title("📱 Automatic QR Generator")
+
+st.write("""
+Submit the Google Form and instantly receive a QR Code.
+""")
 
 st.divider()
 
-# -----------------------------
-# CHECK FOR NEW FORM RESPONSES
-# -----------------------------
-if st.button("Generate QR from Latest Response"):
+# ------------------------------------
+# OPEN FORM BUTTON
+# ------------------------------------
 
-    try:
-        # Read latest form responses
-        df = pd.read_csv(SHEET_URL)
+st.link_button(
+    "📝 Open Google Form",
+    GOOGLE_FORM_LINK
+)
 
-        # Get latest row
-        latest = df.iloc[-1]
+st.divider()
 
-        # Convert row into text
-        qr_data = "\n".join(
-            [f"{col}: {latest[col]}" for col in df.columns]
-        )
+# ------------------------------------
+# AUTO GENERATE QR
+# ------------------------------------
 
-        # Generate QR
-        qr = qrcode.make(qr_data)
+st.subheader("🎟 Your Generated QR Code")
 
-        # Save QR
-        qr_path = "latest_qr.png"
-        qr.save(qr_path)
+try:
 
-        st.success("QR Code Generated!")
+    # Read latest response
+    df = pd.read_csv(GOOGLE_SHEET_CSV)
 
-        # Display QR
-        img = Image.open(qr_path)
-        st.image(img, caption="Generated QR Code")
+    # Check empty
+    if df.empty:
+        st.warning("No responses found yet.")
+        st.stop()
 
-        # Download button
-        with open(qr_path, "rb") as file:
-            st.download_button(
-                label="Download QR",
-                data=file,
-                file_name="qr_code.png",
-                mime="image/png"
-            )
+    # Latest response
+    latest = df.iloc[-1]
 
-    except Exception as e:
+    # Convert response to text
+    qr_data = ""
+
+    for column in df.columns:
+        qr_data += f"{column}: {latest[column]}\n"
+
+    # Generate QR
+    qr = qrcode.QRCode(
+        version=1,
+        box_size=10,
+        border=4
+    )
+
+    qr.add_data(qr_data)
+    qr.make(fit=True)
+
+    img = qr.make_image(
+        fill_color="black",
+        back_color="white"
+    )
+
+    # Save to memory
+    buffer = BytesIO()
+    img.save(buffer, format="PNG")
+
+    # Display QR
+    st.image(
+        buffer,
+        width=300
+    )
+
+    st.success("✅ QR Code Generated Successfully!")
+
+    # Download button
+    st.download_button(
+        label="⬇ Download QR Code",
+        data=buffer.getvalue(),
+        file_name="generated_qr.png",
+        mime="image/png"
+    )
+
+    st.divider()
+
+    # Show latest response
+    st.subheader("📄 Latest Submission")
+
+    st.dataframe(
+        latest.to_frame(),
+        use_container_width=True
+    )
+
+except Exception as e:
+
+    st.error("❌ Error")
+    st.code(str(e))
         st.error(f"Error: {e}")
