@@ -73,11 +73,11 @@ st.markdown(
 st.divider()
 
 st.markdown("""
-### 🚀 How It Works
+###  How It Works
 
 1. Open the Google Form  
 2. Submit your response  
-3. Open the QR Generator page  
+3. Click the URL to go to QR Generator page  
 4. Your QR code will automatically appear
 """)
 
