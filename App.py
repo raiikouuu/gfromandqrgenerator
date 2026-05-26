@@ -145,6 +145,6 @@ try:
 
 except Exception as e:
 
-    st.error("❌ Error")
+    st.error(" Error")
     st.code(str(e))
         st.error(f"Error: {e}")
