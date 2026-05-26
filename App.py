@@ -46,7 +46,7 @@ st.markdown("""
 # YOUR LINKS
 # ------------------------------------
 
-GOOGLE_FORM_LINK = "https://forms.gle/aEkPK2UH5cZTMA7j8K"
+GOOGLE_FORM_LINK = "https://docs.google.com/forms/d/e/1FAIpQLSeTxLbmbDdiqdaoBFC43fBGQ-aE-f6kWpF0b3SgVZbkOVMoJg/viewform?usp=sharing&ouid=108970755142225471143"
 
 GOOGLE_SHEET_CSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSe4Mlc7QAWT5-e9DRKdFI3ecQijiaYDnZMLT7a4wEX1dzvC5ftEHElX0g0jl0wHgcHdHs33jt56G5b/pub?output=csv"
 
