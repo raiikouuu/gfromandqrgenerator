@@ -1,6 +1,6 @@
 import streamlit as st
 import pandas as pd
-import qrcode # type: ignore
+import qrcode 
 from PIL import Image
 import os
 import time
