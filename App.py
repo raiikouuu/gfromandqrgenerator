@@ -9,7 +9,7 @@ import time
 # GOOGLE SHEETS CSV LINK
 # Replace this with your own Google Sheet CSV link
 # -----------------------------
-SHEET_URL = "https://docs.google.com/spreadsheets/d/17HJcWMubJ-rXxluqCSGDm3jIq4kzgLQsZWBBeVCRmdM/edit?usp=sharing"
+SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSe4Mlc7QAWT5-e9DRKdFI3ecQijiaYDnZMLT7a4wEX1dzvC5ftEHElX0g0jl0wHgcHdHs33jt56G5b/pub?output=csv"
 
 st.title("Google Form QR Generator")
 
